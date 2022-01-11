@@ -233,7 +233,6 @@ function sexy_bash_prompt_get_git_status() {
   local unstagedChanges=""
   local stagedChanges=""
   local branchAhead=""
-  local branchBehind=""
 
   # Uncomment to add branch behind functionality
   # if [[ "$branch_behind" == 1 ]]; then
@@ -255,13 +254,22 @@ function sexy_bash_prompt_get_git_status() {
     stagedChanges="$sexy_bash_prompt_dirty_synced_staged_symbol"
   fi
 
+  local result="$unstagedChanges$stagedChanges$branchAhead"
   #return the final output
-  echo "$unstagedChanges$stagedChanges$branchAhead$branchBehind"
+
+  if [ -z "$result" ]; then
+    echo ""
+  else
+    echo " $result"
+  fi
 }
 
 sexy_bash_prompt_get_git_info () {
   # Grab the branch
   branch="$(sexy_bash_prompt_get_git_branch)"
+
+  local op="("
+  local cp=")"
 
   # If there are any branches
   if [[ "$branch" != "" ]]; then
@@ -269,10 +277,10 @@ sexy_bash_prompt_get_git_info () {
     output="$branch"
 
     # Add on the git status
-    output="$output $(sexy_bash_prompt_get_git_status)"
+    output="$output$(sexy_bash_prompt_get_git_status)"
 
     # Echo our output
-    echo "$output"
+    echo "$op$output$cp"
   fi
 }
 
